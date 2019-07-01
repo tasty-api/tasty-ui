@@ -1,0 +1,14 @@
+dist: xenial
+language: node_js
+node_js:
+- 11.0.0
+script:
+- CI=true npm test
+deploy:
+  provider: npm
+  email: jiojiajiu@gmail.com
+  api_key:
+    secure: dpBQ81xa5kP3IrY7bl0R8nePyryvsuEjMpGgOUnWWSArlSYRzQ9lGMsi/X9gW0CGUZMkAlN//Ts7wZkvYs2h2lJfkme6rTL8oph2QE9QFYoWAbR5VTMUoFD4i7/+bKyM0+NWMD3bmtBxVv6K137/5C7TusNrzQxIComOwgj1qgpXxwxShbBMr+kt41dCr31HPJzP281OODF1sxyV2m95fDTMIY0/zyw1pg5X6tmF9/t6pT1Yx6G5JTsu72Fqe5OsdGfYKyrut0hlb5w0/XR7yoFIRAFlKnreql8YLqcqc1icxFxzchyfWVH8wj7zmDsr0ec04Q/dp2Lvh5dx43xJd1G0BKOHfhNOdNkmGwAa9M9fpWvO31hwNtmuBxyBOszGg/HNep8614FARK9DPsIBbYbnNCBTtGEjHOWtzqTrtymHKWb5lqAfEGaeYlzgGEBj+McYUR3rUd8IQALW0KgIaNAQXbb5p5aUm3U4FnOaID8lYqbXQfjeKTNMwTdjwOZ4o46cutNsh99CFogeNeEuI9pPxshXAOjyGKHXSysTEDorCVXvHpWIxjk63ARjpe4uGT99qPzEdaM3z+CxgxmilgtsjFW6fyRna6ogF5AoLznOWs2WcyXrHkRBkbessVFfPu/OXkYcSFFmqvSpIt14849e51cSucWB2aoKUVGZ8bs=
+  on:
+    branch: master
+  tag: next
