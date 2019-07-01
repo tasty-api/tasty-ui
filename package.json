@@ -1,8 +1,10 @@
 {
   "name": "i-tasty",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "dependencies": {
+    "express": "^4.17.1",
+    "express-http-proxy": "^1.5.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.1"
@@ -18,6 +20,7 @@
       "pre-commit": "npm version patch --no-git-tag-version --force && git add package.json package-lock.json"
     }
   },
+  "bin": "./index.js",
   "eslintConfig": {
     "extends": "react-app"
   },
