@@ -12,3 +12,6 @@ deploy:
   on:
     branch: master
   tag: next
+  skip_cleanup: true
+after_deploy:
+  - cat /home/travis/.npm/*.log
