@@ -1,17 +1,17 @@
 dist: xenial
 language: node_js
 node_js:
-- 11.0.0
+  - 11.0.0
 script:
-- CI=true npm test
+  - CI=true npm test
 deploy:
   provider: npm
   email: jiojiajiu@gmail.com
   api_key:
-    secure: 13BJqyiJcf5TUX7QR6pFoyXMjxyIaQxhpW0lyqlb0p6xvkNBXh28yprnliRMnUvrKqYgXkgR5mFJWxr2EbHUKDEy5QFtz429Rs7yxNOvzL3eN7QBZE0z+dDih6+Lv/HzBxzwV45dNDILG8HyfCJpimhA7yNboMRDPXETzAnDD8GFhG1dLjAG5Ns+lnqFExxB7J0TPCCYER6I5CnP3oeX/h1qy8mLkAhsM7aMzBR7uNFmL8CShXa5lQSnWfHx+3bX7d5pfu/QTxXCza2tseWg+pqCwJ210/g5G85cjkEdhS7ogJp16a8i9moQSbamX8Vy457t9pTecM4TqRZt88NcM5y5gJy+pUX+nqKGgJJdaF/DM+2y0b/ZJZowpVQfo2jH004I4dadGvh5re9M7ngGaeap5vTqQq8xGJVjGkd1J7TzwPNOuchsjJX2fsQavCS8LIiASm38Zn1vmMVOCnnpnsdsnk578tDoGSFSp4URNVLy/2yf9YWi7Py5gB7rf5DL3/6eDPcgEJlRq0Zpu5FVUTTflUVwUsDwLd5uFhLZ6oBg4Mumiue2IlkwExzyQtEpA57ALSkLIQFne4Yb7UHiWt1yjdbzYpcfye+G8yUFavR4Yi6SRjlfvfLY66gXBfmwxbcviCBrzEi+wJxhG5rpS0AhvouuDOGHJ1TC8Tq+jeQ=
+    secure: R6BCxIn6OCB2IqK1uTLTozTaggpdfiWsc8dRNhtupO4NXqYl6FevXKxBPUGpHF0AhQhPMTlr1/gsMqUVgfd3c0hPGnJQarHr0eY1rxZT5kt15UvW4irxILkQRWqYYSmzyochfaMjosbElwEdXX959JkqoQfT3kUD6rOvIaTY9dAPXiqlf24fVeqz3h8nIAZUPmWndW/5N1YUiE5J4bi4odyButn4ALn4GUgRN3j6wXds6Zml4XVZlV/i9UkDtYnLPFvaK5NsSJJUdhVTSqMcFXVJ4kNXNjUHgNOHoAe5dlSraG4PmyCN7JRvi1WjwzpG8u9yeHcCbQ5kZUwnnXELzgRZdbeJeI8iGsEhCjrfv65FxakqDNgrxazSxhJCkpbcl1124U1yeAGVFIpRH1erITOMVjPFMFtEjjw650skBi3NDArwEiGt7ApFewq1xiO/4EeliTBTIZC+A8Hss1DUzdzwlrIEhZm1+QRi6+Yuo3Zv6RqJGirA8kSGu7BsIPSX9t0RU9v0JncApVxtcHIHTs5Onp5+wWzujcmdB8JRa3W7YdYNJNEME12Eq+plFm1PpCRxEvih+hXAEtnYHANDUNUSiLqxyJDB72kaGcvUrIjEuFfYneaBk993y3SUWLdm/AzlMcT5JLgUUgoq3ZLzdYga1TQZFV1q6SOQ1ykYmgg=
   on:
     branch: master
   tag: next
   skip_cleanup: true
 after_deploy:
-  - cat /home/travis/.npm/*.log
+  - cat /home/travis/.npm/_logs/*.log
