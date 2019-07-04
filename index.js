@@ -3,15 +3,17 @@
 const express = require('express');
 const path = require('path');
 const proxy = require('express-http-proxy');
+const cors = require('cors');
 
 const restServer = require('./server');
 
-const restServerPort = 3000; // @todo move to nconf
+const restServerPort = 3001; // @todo move to nconf
 const staticServerPort = 8080; // @todo move to nconf
 
 const staticServer = express();
-
+restServer.use(cors());
 restServer.listen(restServerPort, () => console.log(`Rest server listening on port ${restServerPort}!`));
+
 
 staticServer.use(express.static(path.join(__dirname, 'build')));
 

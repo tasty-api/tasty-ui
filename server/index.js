@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 
-app.get('/tests', (req, res) => res.send('@TODO Get tests by type'));
+app.use('/tests', require('./routes/tests'));
 
 app.get('/reports', (req, res) => res.send('@TODO Get reports by type'));
 
