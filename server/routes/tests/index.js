@@ -1,20 +1,33 @@
 const express = require('express');
-const router = express.Router();
-
-router.get('/',(req,res)=>{
-  console.log('request: ',req);
-  res.json({
-      tests:{
-        functional:{a:5,b:"abc",c:{a:[1,2,3,4,5]}},
-        load:{load:true}
-      }
+const path = require('path');
+module.exports = function router(Router){
+  const customRouter = express.Router();
+  customRouter.get('/',(req,res)=>{
+    //console.log('request: ',req);
+    const mapFunc = (elt) =>{
+        return {path:elt,name:path.basename(elt)};
+    };
+    Router.getTestFiles('func').then(resultFunc=>{
+      Router.getTestFiles('load').then(resultLoad=>{
+          res.json({
+            functional:resultFunc.map(mapFunc),
+            load: resultLoad.map(mapFunc)
+          });
+      });
+    });
   });
-});
-router.get('/types/',(req,res)=>{
-  console.log('request: ',req);
-  res.json({
-    types:["functional","load"]
-  })
-});
-
-module.exports = router;
+  customRouter.get('/types/',(req,res)=>{
+    //console.log('request: ',req);
+    res.json({
+      types:["functional","load"]
+    })
+  });
+  customRouter.post('/run/',(req,res)=>{
+    console.log('post request: ',req);
+    setTimeout(()=>{
+      console.log('executed tests!');
+      res.json({done:true});
+    },5000)
+  });
+  return customRouter;
+};
