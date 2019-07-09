@@ -21,9 +21,9 @@ class Request{
   getMain(){
     return Promise.resolve(1);
   }
-  runTests(type,testFiles){
+  runTests({type,tests}){
       const address = config.addresses.testing.runTests;
-      return axios.post(address,{type,files:testFiles}).then(response=>{
+      return axios.post(address,{type,tests}).then(response=>{
         return response.data;
       });
   }

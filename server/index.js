@@ -1,8 +1,11 @@
 const express = require('express');
 const app = express();
+
 const path = require('path');
 const Processor = require('./process');
 const TestsRouter = new Processor(path.resolve(path.join(process.cwd(),'myTestsStub')));
+
+app.use(express.json());
 
 app.use('/tests', require('./routes/tests')(TestsRouter));
 

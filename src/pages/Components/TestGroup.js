@@ -1,9 +1,10 @@
 // lists all the tests and provides customization for tests to run
 
 import React from 'react';
-import {Tabs, Tab, Container, ListGroup, ListGroupItem, Col, Row, Button} from 'react-bootstrap';
+import {ListGroup, Col, Row, Button} from 'react-bootstrap';
 import './styles/styles.scss';
 import Newcomp from './TestGroupItem';
+import ConsoleWindow from './ConsoleWnd';
 const requests = require('../../requests');
 
 class TestGroup extends React.Component {
@@ -15,7 +16,8 @@ class TestGroup extends React.Component {
       unselected: props.tests,
       btnSelected: false,
       btnSelectedText:'Select All',
-      done:''
+      done:'',
+      testResultsHtml:''
     };
     this.selectAll = this.selectAll.bind(this);
   }
@@ -54,13 +56,16 @@ class TestGroup extends React.Component {
     //@todo case when no tests means initiation of all tests in the block!!!
     let selectedTests = this.state.selectedTests.length===0 ? this.props.tests : this.state.selectedTests;
     const self = this;
-    requests.runTests({type:this.props.type,tests:selectedTests}).then(result=>(self.setState({...self.state,done:JSON.stringify(result)})));
+    requests.runTests({type:this.props.type,tests:selectedTests}).then(result=>{
+      self.setState({done:JSON.stringify(result),testResultHtml:result});
+    }
+  );
   }
   render() {
     const tests = this.state.allTests;
     const {type} = this.props;
 
-    const List = tests.map((elt, index) => (<Newcomp click={this.clickHandler.bind(this)} active = {elt.active} name={elt.name} path={elt.path}/>));
+    const List = tests.map((elt, index) => (<Newcomp key={index} click={this.clickHandler.bind(this)} active = {elt.active} name={elt.name} path={elt.path}/>));
 
     if (List.length > 0) {
       return (
@@ -71,9 +76,9 @@ class TestGroup extends React.Component {
               {List}
             </ListGroup>
 
-            <Button variant="outline-primary" class="list-button" onClick={this.clickRunHandler.bind(this)}> Run -> </Button>
+            <Button variant="outline-primary" className="list-button" onClick={this.clickRunHandler.bind(this)}> Run -> </Button>
           </Col>
-          <div>done={this.state.done}</div>
+          <ConsoleWindow htmlText={this.state.testResultHtml}/>
         </Row>
       );
     } else {
