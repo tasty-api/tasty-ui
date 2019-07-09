@@ -6,7 +6,7 @@ const proxy = require('express-http-proxy');
 
 const restServer = require('./server');
 
-const restServerPort = 3000; // @todo move to nconf
+const restServerPort = 3001; // @todo move to nconf
 const staticServerPort = 8080; // @todo move to nconf
 
 const staticServer = express();
