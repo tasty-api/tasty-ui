@@ -3,7 +3,7 @@ const app = express();
 
 const path = require('path');
 const Processor = require('./process');
-const TestsRouter = new Processor(path.resolve(path.join(process.cwd(),'myTestsStub')));
+const TestsRouter = new Processor(path.resolve(path.join(process.cwd(),'test')));
 
 app.use(express.json());
 
