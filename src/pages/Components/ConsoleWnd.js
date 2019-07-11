@@ -8,9 +8,7 @@ import './styles/styles.scss';
 const ConsoleWindow = (props)=>{
   debugger;
   return (
-  <Col>
-    {props.htmlText}
-  </Col>
+  <Col dangerouslySetInnerHTML={{__html:props.htmlText}}/>
   );
 };
 export default ConsoleWindow;
