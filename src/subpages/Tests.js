@@ -11,6 +11,7 @@ class Tests extends React.Component {
     selected: [],
     loading: false,
     stats: {},
+    log: '',
   };
 
   async componentDidMount() {
@@ -26,6 +27,12 @@ class Tests extends React.Component {
     socket.on('tests:end', (stats) => {
       console.log(stats);
       this.setState({ loading: false, stats });
+    });
+
+    socket.on('tests:log', (log) => {
+      this.setState({
+        log: this.state.log + log,
+      });
     });
   }
 
@@ -67,9 +74,14 @@ class Tests extends React.Component {
 
     this.setState({
       loading: true,
+      log: '',
     });
 
     await api.runTests(filters);
+  };
+
+  createMarkup = () => {
+    return { __html: this.state.log };
   };
 
   render() {
@@ -121,6 +133,7 @@ class Tests extends React.Component {
             </ListGroup>
           </Col>
           <Col md={8}>
+            <div dangerouslySetInnerHTML={this.createMarkup()} style={{ whiteSpace: 'pre-wrap' }} />
           </Col>
         </Row>
       </>

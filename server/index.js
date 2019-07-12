@@ -9,6 +9,10 @@ const TastyRunner = require(path.resolve(process.cwd(), 'index.js'));
 
 const io = socket(server);
 
+TastyRunner.logStream.on('data', (data) => {
+  io.emit('tests:log', data.toString());
+});
+
 app.use(express.json());
 
 app.get('/api/tests', async (req, res) => {
@@ -34,7 +38,9 @@ app.get('/api/reports/:id', async (req, res) => {
 
 app.post('/api/test', (req) => {
   const filters = req.body.data;
+
   io.emit('tests:start');
+
   TastyRunner.run(filters.type)
     .then((stats) => {
       io.emit('tests:end', stats);
