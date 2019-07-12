@@ -84,26 +84,20 @@ class Tests extends React.Component {
             {this.state.loading ? (
               <Spinner animation="border" />
             ) : (
-              <Run className="my-auto" size={32} onClick={this.handleRun} />
+              <Run className="my-auto" size={32} onClick={this.handleRun} style={{ cursor: 'pointer' }} />
             )}
           </div>
-          <Col>
-            {this.state.loading ? (
+          {this.state.loading ? (
+            <Col>
               <ProgressBar now={0} className="my-auto" />
-            ) : (
-              <Row>
-                <Col md={2}>
-                  Tests: <Badge>{_.get(this.state, 'stats.tests', 0)}</Badge>
-                </Col>
-                <Col md={2}>
-                  Passed: <Badge variant="success">{_.get(this.state, 'stats.passes', 0)}</Badge>
-                </Col>
-                <Col md={2}>
-                  Failed: <Badge variant="danger">{_.get(this.state, 'stats.fails', 0)}</Badge>
-                </Col>
-              </Row>
-            )}
-          </Col>
+            </Col>
+          ) : (
+            <span className="ml-auto">
+              <Badge className="m-1" variant="light">Tests: {_.get(this.state, 'stats.tests', 0)}</Badge>
+              <Badge className="m-1" variant="success">Passed: {_.get(this.state, 'stats.passes', 0)}</Badge>
+              <Badge className="m-1" variant="danger">Failed: {_.get(this.state, 'stats.fails', 0)}</Badge>
+            </span>
+          )}
         </Row>
         <Row className="my-3">
           <Button className="ml-3 my-auto" variant="outline-primary" onClick={this.handleToggleAll}>
