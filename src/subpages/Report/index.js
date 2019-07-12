@@ -38,7 +38,13 @@ class Report extends React.Component {
       text: 'Name',
       headerClasses: 'w-50',
       formatter: (cell, row) => (
-        <a target="_blank" href={`http://localhost:8080/report/${this.props.match.params.type}/${this.props.match.params.id}/${row.name}`}>{_.capitalize(row.name)}</a>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`${window.location.origin}/report/${this.props.match.params.type}/${this.props.match.params.id}/${row.name}`} // @todo server configuration
+        >
+          {_.capitalize(row.name)}
+        </a>
       )
     }, {
       dataField: 'stats.tests',
