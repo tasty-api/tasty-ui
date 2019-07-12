@@ -43,8 +43,8 @@ module.exports = function router(Router) {
     setTimeout(() => {
       //console.log('executed tests!');
       //res.json({done:true});
-      console.log('file to send: ',path.resolve(path.join(process.cwd(), 'server/logs', strF+'_log.html')));
-      res.sendFile(path.resolve(path.join(process.cwd(), 'server/logs', strF+'_log.html')));
+      console.log('file to send: ',path.resolve(path.join(process.cwd(), 'logs', strF+'_log.html')));
+      res.sendFile(path.resolve(path.join(process.cwd(), 'logs', strF+'_log.html')));
     }, 1000);
   });
   return customRouter;
