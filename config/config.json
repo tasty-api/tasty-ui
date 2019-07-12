@@ -2,5 +2,9 @@
   "reports_dir": {
     "func": null,
     "load": null
+  },
+  "tests_dir": {
+    "func": null,
+    "load": null
   }
 }

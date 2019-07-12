@@ -21,3 +21,27 @@ export const fetchReport = async (id) => {
     return null;
   }
 };
+
+export const fetchTests = async (filters) => {
+  try {
+    const res = await axios.get('/api/tests/', {
+      params: { filters },
+    });
+
+    return res.data;
+  } catch (err) {
+    return null;
+  }
+};
+
+export const runTests = async (filters) => {
+  try {
+    const res = await axios.post('/api/test', {
+      data: filters,
+    });
+
+    return res.data;
+  } catch (err) {
+    return null;
+  }
+};

@@ -1,29 +1,45 @@
 const express = require('express');
 const app = express();
+const server = require('http').Server(app);
 const Reports = require('./Reports');
-
+const Tests = require('./Tests');
 const path = require('path');
-const Processor = require('./process');
-const TestsRouter = new Processor(path.resolve(path.join(process.cwd(),'myTestsStub')));
+const socket = require('socket.io');
+const TastyRunner = require(path.resolve(process.cwd(), 'index.js'));
+
+const io = socket(server);
 
 app.use(express.json());
 
-app.use('/tests', require('./routes/tests')(TestsRouter));
+app.get('/api/tests', async (req, res) => {
+  const filters = JSON.parse(req.query.filters || '{}');
+  const tests = await Tests.find(filters);
 
-app.get('/reports', async (req, res) => {
+  res.json(tests);
+});
+
+app.get('/api/reports', async (req, res) => {
   const filters = JSON.parse(req.query.filters || '{}');
   const reports = await Reports.find(filters);
 
   res.json(reports);
 });
 
-app.get('/reports/:id', async (req, res) => {
+app.get('/api/reports/:id', async (req, res) => {
   const id = +req.params.id;
   const report = await Reports.findOne(id);
 
   res.json(report);
 });
 
-app.post('/test', (req, res) => res.send('@TODO Run tests by type'));
+app.post('/api/test', (req) => {
+  const filters = req.body.data;
+  io.emit('tests:start');
+  TastyRunner.run(filters.type)
+    .then((stats) => {
+      io.emit('tests:end', stats);
+    });
+});
 
-module.exports = app;
+
+module.exports = server;

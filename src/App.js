@@ -13,15 +13,15 @@ function App() {
       <Navbar variant="dark" bg="dark" expand="lg">
         <Navbar.Brand as={NavLink} to="/">{`${PROJECT_NAME} Tasty Point`}</Navbar.Brand>
         <Nav className="mr-auto">
-          <NavLink to="/testing" className="nav-link">Testing</NavLink>
+          <NavLink to="/tests" className="nav-link">Tests</NavLink>
           <NavLink to="/reports" className="nav-link">Reports</NavLink>
         </Nav>
       </Navbar>
       <Container className="App my-3" fluid>
         <Switch>
-          <Route path="/testing" component={Testing} />
+          <Route path="/tests" component={Testing} />
           <Route path="/reports" component={Reports} />
-          <Redirect to="/testing" />
+          <Redirect to="/tests" />
         </Switch>
       </Container>
     </Router>
