@@ -41,6 +41,8 @@ app.post('/api/test', (req) => {
 
   io.emit('tests:start');
 
+  TastyRunner.setFilters(filters);
+
   TastyRunner.run(filters.type)
     .then((stats) => {
       io.emit('tests:end', stats);
