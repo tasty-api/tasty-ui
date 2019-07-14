@@ -27,6 +27,14 @@ class Report extends React.Component {
     }
   }
 
+  get id() {
+    return _.get(this.props, 'match.params.id', null);
+  }
+
+  get type() {
+    return _.get(this.props, 'match.params.type', 'func');
+  }
+
   render() {
     const { report } = this.state;
 
@@ -93,18 +101,20 @@ class Report extends React.Component {
     return (
       <>
         <h1 className="mb-3">{report.title}</h1>
-        <BootstrapTable keyField='name' data={report.tests } columns={ columns } bordered={false} rowClasses={(row) => {
-          const percent = row.stats.passes / row.stats.tests * 100;
+        {this.type === 'func' && (
+          <BootstrapTable keyField='name' data={report.tests } columns={ columns } bordered={false} rowClasses={(row) => {
+            const percent = row.stats.passes / row.stats.tests * 100;
 
-          switch (true) {
-            case percent === 100:
-              return 'table-success';
-            case percent >= 90 && percent < 100:
-              return 'table-warning';
-            default:
-              return 'table-danger';
-          }
-        }}/>
+            switch (true) {
+              case percent === 100:
+                return 'table-success';
+              case percent >= 90 && percent < 100:
+                return 'table-warning';
+              default:
+                return 'table-danger';
+            }
+          }}/>
+        )}
       </>
     );
   }

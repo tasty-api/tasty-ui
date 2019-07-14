@@ -1,9 +1,10 @@
 import React from 'react';
-import { CardColumns, Col, ListGroup, Row } from 'react-bootstrap';
+import { CardColumns, Col, ListGroup, Row, Nav } from 'react-bootstrap';
 import { NavLink, Route } from 'react-router-dom';
 import * as api from '../../api';
 import Report from '../../subpages/Report';
 import ReportCard from '../../components/Report';
+import _ from 'lodash';
 
 class Reports extends React.Component {
   state = {
@@ -35,6 +36,10 @@ class Reports extends React.Component {
     }
   }
 
+  get type() {
+    return _.get(this.props, 'match.params.type', 'func');
+  }
+
   render() {
     const { type } = this.props.match.params;
     const { reports } = this.state;
@@ -44,14 +49,27 @@ class Reports extends React.Component {
         <Col md={3}>
           <ListGroup>
             {reports.map(report => (
-              <ListGroup.Item
-                as={NavLink}
-                key={report.id}
-                to={`${this.props.match.url}/${report.id}`}
-                action
-              >
-                {report.title}
-              </ListGroup.Item>
+              this.type === 'func' ? (
+                <ListGroup.Item
+                  as={NavLink}
+                  key={report.id}
+                  to={`${this.props.match.url}/${report.id}`}
+                  action
+                >
+                  {report.title}
+                </ListGroup.Item>
+              ) : (
+                <ListGroup.Item
+                  as={Nav.Link}
+                  key={report.id}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={`${window.location.origin}/report/${this.type}/${report.id}`}
+                  action
+                >
+                  {report.title}
+                </ListGroup.Item>
+              )
             ))}
           </ListGroup>
         </Col>
