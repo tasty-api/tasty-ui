@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+  - '7'
+script:
+  - CI=true npm test
+deploy:
+  provider: npm
+  email: jiojiajiu@gmail.com
+  api_key:
+    secure: R6BCxIn6OCB2IqK1uTLTozTaggpdfiWsc8dRNhtupO4NXqYl6FevXKxBPUGpHF0AhQhPMTlr1/gsMqUVgfd3c0hPGnJQarHr0eY1rxZT5kt15UvW4irxILkQRWqYYSmzyochfaMjosbElwEdXX959JkqoQfT3kUD6rOvIaTY9dAPXiqlf24fVeqz3h8nIAZUPmWndW/5N1YUiE5J4bi4odyButn4ALn4GUgRN3j6wXds6Zml4XVZlV/i9UkDtYnLPFvaK5NsSJJUdhVTSqMcFXVJ4kNXNjUHgNOHoAe5dlSraG4PmyCN7JRvi1WjwzpG8u9yeHcCbQ5kZUwnnXELzgRZdbeJeI8iGsEhCjrfv65FxakqDNgrxazSxhJCkpbcl1124U1yeAGVFIpRH1erITOMVjPFMFtEjjw650skBi3NDArwEiGt7ApFewq1xiO/4EeliTBTIZC+A8Hss1DUzdzwlrIEhZm1+QRi6+Yuo3Zv6RqJGirA8kSGu7BsIPSX9t0RU9v0JncApVxtcHIHTs5Onp5+wWzujcmdB8JRa3W7YdYNJNEME12Eq+plFm1PpCRxEvih+hXAEtnYHANDUNUSiLqxyJDB72kaGcvUrIjEuFfYneaBk993y3SUWLdm/AzlMcT5JLgUUgoq3ZLzdYga1TQZFV1q6SOQ1ykYmgg=
+  on:
+    branch: master
+  tag: next
+  skip_cleanup: true
+after_deploy:
+  - cat /home/travis/.npm/_logs/*.log
