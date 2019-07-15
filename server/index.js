@@ -1,4 +1,5 @@
 const express = require('express');
+const fs = require('fs');
 const app = express();
 const server = require('http').Server(app);
 const Reports = require('./Reports');
@@ -10,7 +11,9 @@ const TastyRunner = require(path.resolve(process.cwd(), 'index.js'));
 const io = socket(server);
 
 TastyRunner.logStream.on('data', (data) => {
-  io.emit('tests:log', data.toString());
+  const type = TastyRunner.getCurrentType();
+
+  io.emit(`tests-${type}:log`, data.toString());
 });
 
 app.use(express.json());
@@ -49,5 +52,15 @@ app.post('/api/test', (req) => {
     });
 });
 
+app.get('/api/status', (req, res) => {
+  res.json(TastyRunner.getStatus());
+});
+
+app.get('/api/log', (req, res) => {
+  res.json({
+    func: fs.readFileSync(path.resolve(process.cwd(), 'logs', 'func_log.html')).toString(),
+    load: fs.readFileSync(path.resolve(process.cwd(), 'logs', 'load_log.html')).toString(),
+  });
+});
 
 module.exports = server;

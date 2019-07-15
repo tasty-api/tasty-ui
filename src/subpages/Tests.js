@@ -12,32 +12,53 @@ class Tests extends React.Component {
     selected: [],
     loading: false,
     stats: {},
-    log: '',
+    funcLog: '',
+    loadLog: '',
   };
+
+  socket = socketIOClient('http://localhost:3000');
 
   async componentDidMount() {
     const filters = {
       type: this.type,
     };
     const tests = await api.fetchTests(filters);
+    const status = await api.getStatus();
+    const logs = await api.getLog();
+
+    localStorage.setItem('func_log', logs.func);
+    localStorage.setItem('load_log', logs.load);
 
     this.setState({
       tests,
       stats: JSON.parse(localStorage.getItem(this.type === 'func' ? 'func_stats' : 'load_stats')),
-      log: localStorage.getItem(this.type === 'func' ? 'func_log' : 'load_log'),
+      funcLog: logs.func,
+      loadLog: logs.load,
+      loading: status === 'inProcess'
     });
 
-    const socket = socketIOClient('http://localhost:3000');
+    this.socket.on('tests:start', () => {
+      this.setState({ loading: true });
+    });
 
-    socket.on('tests:end', (stats) => {
+    this.socket.on('tests:end', (stats) => {
       this.setState({ loading: false, stats });
       localStorage.setItem(this.type === 'func' ? 'func_stats' : 'load_stats', JSON.stringify(stats));
     });
 
-    socket.on('tests:log', (log) => {
-      this.setState({ log: this.state.log + log });
-      localStorage.setItem(this.type === 'func' ? 'func_log' : 'load_log', this.state.log + log);
+    this.socket.on('tests-func:log', (log) => {
+      localStorage.setItem('func_log', this.state.funcLog + log);
+      this.setState({ funcLog: this.state.funcLog + log });
     });
+
+    this.socket.on('tests-load:log', (log) => {
+      localStorage.setItem('load_log', this.state.loadLog + log);
+      this.setState({ loadLog: this.state.loadLog + log });
+    })
+  }
+
+  componentWillUnmount() {
+    this.socket.removeAllListeners();
   }
 
   async componentDidUpdate(prevProps) {
@@ -48,11 +69,12 @@ class Tests extends React.Component {
         type: this.type,
       };
       const tests = await api.fetchTests(filters);
+
       this.setState({
         tests,
         selected: [],
         stats: JSON.parse(localStorage.getItem(this.type === 'func' ? 'func_stats' : 'load_stats')),
-        log: localStorage.getItem(this.type === 'func' ? 'func_log' : 'load_log'),
+        [`${this.type}Log`]: localStorage.getItem(this.type === 'func' ? 'func_log' : 'load_log'),
       });
     }
   }
@@ -82,7 +104,7 @@ class Tests extends React.Component {
 
     this.setState({
       loading: true,
-      log: '',
+      [`${this.type}Log`]: '',
     });
 
     await api.runTests(filters);
@@ -93,7 +115,7 @@ class Tests extends React.Component {
   }
 
   createMarkup = () => {
-    return { __html: this.state.log };
+    return { __html: this.state[`${this.type}Log`] };
   };
 
   getCodeColor = (code) => {
@@ -111,7 +133,7 @@ class Tests extends React.Component {
     const codes = _.get(this.state, 'stats.aggregate.codes', {});
 
     return Object.keys(codes).map(code => (
-      <Badge className="m-1" variant={this.getCodeColor(code)}>{code}: {codes[code]}</Badge>
+      <Badge key={code} className="m-1" variant={this.getCodeColor(code)}>{code}: {codes[code]}</Badge>
     ));
   };
 
@@ -119,7 +141,7 @@ class Tests extends React.Component {
     const scenarios = _.get(this.state, 'stats.aggregate.scenarioCounts', {});
 
     return Object.keys(scenarios).map(scenario => (
-      <Badge className="m-1" variant="light">{scenario}: {scenarios[scenario]}</Badge>
+      <Badge key={scenario} className="m-1" variant="light">{scenario}: {scenarios[scenario]}</Badge>
     ));
   };
 
@@ -127,7 +149,7 @@ class Tests extends React.Component {
     const latencies = _.get(this.state, 'stats.aggregate.latency', {});
 
     return Object.keys(latencies).map(latency => (
-      <Badge className="m-1" variant="light">{latency}: {latencies[latency]}</Badge>
+      <Badge key={latency} className="m-1" variant="light">{latency}: {latencies[latency]}</Badge>
     ));
   };
 

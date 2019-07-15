@@ -45,3 +45,23 @@ export const runTests = async (filters) => {
     return null;
   }
 };
+
+export const getStatus = async () => {
+  try {
+    const res = await axios.get('/api/status');
+
+    return res.data;
+  } catch (err) {
+    return null;
+  }
+};
+
+export const getLog = async () => {
+  try {
+    const res = await axios.get('/api/log');
+
+    return res.data;
+  } catch (err) {
+    return null;
+  }
+};
