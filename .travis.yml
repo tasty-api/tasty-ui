@@ -1,10 +1,12 @@
+dist: xenial
 language: node_js
 node_js:
-  - '7'
+  - "11.0.0"
 script:
   - CI=true npm test
 before_deploy:
-  - echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
+  - echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/home/travis/.npmrc
+  - npm whoami
 deploy:
   provider: npm
   email: jiojiajiu@gmail.com
