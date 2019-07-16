@@ -26,7 +26,7 @@ module.exports = new Reports();
 async function getReports(filters = {}) {
   const { type = 'func' } = filters;
   const dir = path.resolve(DEFAULT_REPORTS_DIR, type);
-  const reports = await readdir(dir, { withFileTypes: true }) || [];
+  const reports = fs.existsSync(dir) ? await readdir(dir, { withFileTypes: true }) || [] : [];
 
   return reports.filter(file => file.isDirectory()).map(file => ({
     id: +file.name,
@@ -40,7 +40,7 @@ async function getReport(id) {
   const testsDir = fs.existsSync(path.resolve(funcReportsDir, id.toString())) ?
     path.resolve(funcReportsDir, id.toString()) :
     path.resolve(loadReportsDir, id.toString());
-  const tests = await readdir(testsDir, { withFileTypes: true }) || [];
+  const tests = fs.existsSync(testsDir) ? await readdir(testsDir, { withFileTypes: true }) || [] : [];
 
   return {
     id,
@@ -56,5 +56,7 @@ async function readReport(filters = {}) {
   const { type = 'func', id = null, name = null } = filters;
   const reportsDir = path.resolve(DEFAULT_REPORTS_DIR, type);
   const reportDir = path.resolve(reportsDir, id);
-  return fs.readFileSync(path.resolve(reportDir, name, 'index.html'));
+  const reportFile = path.resolve(reportDir, name, 'index.html');
+
+  return fs.existsSync(reportFile) ? fs.readFileSync(reportFile) : '';
 }
