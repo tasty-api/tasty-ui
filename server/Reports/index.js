@@ -2,7 +2,6 @@ const util = require('util');
 const fs = require('fs');
 const path = require('path');
 const moment = require('moment');
-const config = require('../../config');
 
 const readdir = util.promisify(fs.readdir);
 
@@ -26,7 +25,7 @@ module.exports = new Reports();
 
 async function getReports(filters = {}) {
   const { type = 'func' } = filters;
-  const dir = config.get('reports_dir')[type] || path.resolve(DEFAULT_REPORTS_DIR, type);
+  const dir = path.resolve(DEFAULT_REPORTS_DIR, type);
   const reports = await readdir(dir, { withFileTypes: true }) || [];
 
   return reports.filter(file => file.isDirectory()).map(file => ({
@@ -36,8 +35,8 @@ async function getReports(filters = {}) {
 }
 
 async function getReport(id) {
-  const funcReportsDir = config.get('reports_dir:func') || path.resolve(DEFAULT_REPORTS_DIR, 'func');
-  const loadReportsDir = config.get('reports_dir:load') || path.resolve(DEFAULT_REPORTS_DIR, 'load');
+  const funcReportsDir = path.resolve(DEFAULT_REPORTS_DIR, 'func');
+  const loadReportsDir = path.resolve(DEFAULT_REPORTS_DIR, 'load');
   const testsDir = fs.existsSync(path.resolve(funcReportsDir, id.toString())) ?
     path.resolve(funcReportsDir, id.toString()) :
     path.resolve(loadReportsDir, id.toString());
@@ -55,7 +54,7 @@ async function getReport(id) {
 
 async function readReport(filters = {}) {
   const { type = 'func', id = null, name = null } = filters;
-  const reportsDir = config.get('reports_dir')[type] || path.resolve(DEFAULT_REPORTS_DIR, type);
+  const reportsDir = path.resolve(DEFAULT_REPORTS_DIR, type);
   const reportDir = path.resolve(reportsDir, id);
   return fs.readFileSync(path.resolve(reportDir, name, 'index.html'));
 }
