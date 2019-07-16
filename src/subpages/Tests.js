@@ -46,12 +46,12 @@ class Tests extends React.Component {
       localStorage.setItem(this.type === 'func' ? 'func_stats' : 'load_stats', JSON.stringify(stats));
     });
 
-    this.socket.on('tests-func:log', (log) => {
+    this.socket.on('tests:func:log', (log) => {
       localStorage.setItem('func_log', this.state.funcLog + log);
       this.setState({ funcLog: this.state.funcLog + log });
     });
 
-    this.socket.on('tests-load:log', (log) => {
+    this.socket.on('tests:load:log', (log) => {
       localStorage.setItem('load_log', this.state.loadLog + log);
       this.setState({ loadLog: this.state.loadLog + log });
     })

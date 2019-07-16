@@ -13,7 +13,7 @@ const io = socket(server);
 TastyRunner.logStream.on('data', (data) => {
   const type = TastyRunner.getCurrentType();
 
-  io.emit(`tests-${type}:log`, data.toString());
+  io.emit(`tests:${type}:log`, data.toString());
 });
 
 app.use(express.json());
