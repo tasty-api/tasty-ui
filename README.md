@@ -1,4 +1,4 @@
-# iTasty [![Build Status](https://travis-ci.org/tastyapi/tasty-ui.svg?branch=master)](https://travis-ci.org/tastyapi/tasty-ui)
+# iTasty [![Build Status](https://travis-ci.org/tasty-api/tasty-ui.svg?branch=master)](https://travis-ci.org/tasty-api/tasty-ui)
 Interactive UI tool for tasty
 
 ## Available Scripts
