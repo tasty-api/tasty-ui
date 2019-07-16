@@ -3,6 +3,8 @@ node_js:
   - '7'
 script:
   - CI=true npm test
+before_deploy:
+  - echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
 deploy:
   provider: npm
   email: jiojiajiu@gmail.com
@@ -12,5 +14,3 @@ deploy:
     branch: master
   tag: next
   skip_cleanup: true
-after_deploy:
-  - cat /home/travis/.npm/_logs/*.log
