@@ -6,7 +6,7 @@ version: 2
 defaults: &defaults
   working_directory: ~/repo
   docker:
-    - image: circleci/node:chakracore
+    - image: circleci/node:11.0.0
 jobs:
   build:
     <<: *defaults
