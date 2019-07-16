@@ -57,9 +57,12 @@ app.get('/api/status', (req, res) => {
 });
 
 app.get('/api/log', (req, res) => {
+  const funcLogFile = path.resolve(process.cwd(), 'logs', 'func_log.html');
+  const loadLogFile = path.resolve(process.cwd(), 'logs', 'load_log.html');
+
   res.json({
-    func: fs.readFileSync(path.resolve(process.cwd(), 'logs', 'func_log.html')).toString(),
-    load: fs.readFileSync(path.resolve(process.cwd(), 'logs', 'load_log.html')).toString(),
+    func: fs.existsSync(funcLogFile) ? fs.readFileSync(funcLogFile).toString() : '',
+    load: fs.existsSync(loadLogFile) ? fs.readFileSync(loadLogFile).toString() : '',
   });
 });
 
