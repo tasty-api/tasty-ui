@@ -5,7 +5,9 @@ node_js:
 script:
   - CI=true npm test
 before_deploy:
-  - echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/home/travis/.npmrc
+  - pwd
+  - whoami
+  - echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > /home/travis/.npmrc
   - npm whoami
 deploy:
   provider: npm
