@@ -2,7 +2,7 @@
 
 const express = require('express');
 const path = require('path');
-const proxy = require('express-http-proxy');
+const proxy = require('http-proxy-middleware');
 
 const restServer = require('./server');
 
@@ -16,9 +16,7 @@ restServer.listen(restServerPort, () => console.log(`Rest server listening on po
 staticServer.use(express.static(path.join(__dirname, 'build')));
 staticServer.use('/report', express.static(path.join(process.cwd(), 'reports')));
 
-staticServer.use('/api', proxy(`http://localhost:${restServerPort}`, {
-  proxyReqPathResolver: req => path.join('/api', req.url),
-}));
+staticServer.use('/api', proxy({ target: `http://localhost:${restServerPort}` }));
 
 staticServer.get('*', (req, res) => res.sendFile(path.resolve(__dirname, 'build', 'index.html')));
 
