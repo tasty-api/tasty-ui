@@ -66,4 +66,46 @@ app.get('/api/log', (req, res) => {
   });
 });
 
+app.get('/api/config', (req, res) => {
+  const {type} = req.query;
+  if (type) {
+    //getting the current configuration from tasty
+    const currentConfig = TastyRunner.getCurrentConfig(type);
+    res.json(currentConfig);
+  } else {
+    res.status(500).send('select the parameter in type! load or func example: ?type=load');
+  }
+});
+app.post('/api/config', (req, res) => {
+  const {type} = req.query;
+  if (type) {
+    // get
+    try {
+      TastyRunner.setCurrentConfig(type,req.body).then(result=>{
+        res.json({result:true});
+      }).catch(error=>{
+        res.status(500).send('error while processing configuration');
+      });
+    }
+    catch(err){
+      res.status(500).send('error while parsing JSON');
+    }
+  } else {
+    res.status(500).send('error while getting the type! select ?type=load or ?type=func')
+  }
+});
+app.get('/api/config/schema',(req,res)=>{
+  const {type} = req.query;
+  if(type)
+  {
+    try {
+      const schema = TastyRunner.getSchema(type);
+      res.json(schema);
+    }
+    catch(err)
+    {
+      res.status(500).send(err);
+    }
+  }
+});
 module.exports = server;
