@@ -3,7 +3,7 @@ import axios from 'axios';
 export const fetchReports = async (filters) => {
   try {
     const res = await axios.get('/api/reports', {
-      params: {filters},
+      params: { filters },
     });
 
     return res.data;
@@ -25,7 +25,7 @@ export const fetchReport = async (id) => {
 export const fetchTests = async (filters) => {
   try {
     const res = await axios.get('/api/tests/', {
-      params: {filters},
+      params: { filters },
     });
 
     return res.data;
@@ -73,13 +73,13 @@ export const getConfiguration = async (type) => {
     return null;
   }
 };
-export const setConfiguration = async (type,data) => {
+export const setConfiguration = async (type, data) => {
   try {
     const sendData = JSON.parse(data);
-    const res = await axios.post(`/api/config?type=${type}`,sendData);
+    const res = await axios.post(`/api/config?type=${type}`, sendData);
     return res.data;
   } catch (err) {
-    return {error:true,err};
+    return { error:true, err };
   }
 };
 export const getSchema = async (type) =>{
@@ -90,4 +90,4 @@ export const getSchema = async (type) =>{
   catch(err){
     return err;
   }
-}
+};

@@ -10,7 +10,7 @@ class Processor{
     this.workDirectory = workingDir;
   }
   getTestFiles(type){
-    return recursive(path.resolve(path.join(this.workDirectory,type)))//@todo catch section!!!!!
+    return recursive(path.resolve(path.join(this.workDirectory, type)));//@todo catch section!!!!!
   }
 }
 module.exports = Processor;

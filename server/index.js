@@ -67,7 +67,7 @@ app.get('/api/log', (req, res) => {
 });
 
 app.get('/api/config', (req, res) => {
-  const {type} = req.query;
+  const { type } = req.query;
   if (type) {
     //getting the current configuration from tasty
     const currentConfig = TastyRunner.getCurrentConfig(type);
@@ -77,12 +77,12 @@ app.get('/api/config', (req, res) => {
   }
 });
 app.post('/api/config', (req, res) => {
-  const {type} = req.query;
+  const { type } = req.query;
   if (type) {
     // get
     try {
-      TastyRunner.setCurrentConfig(type,req.body).then(result=>{
-        res.json({result:true});
+      TastyRunner.setCurrentConfig(type, req.body).then(result=>{
+        res.json({ result:true });
       }).catch(error=>{
         res.status(500).send('error while processing configuration');
       });
@@ -91,11 +91,11 @@ app.post('/api/config', (req, res) => {
       res.status(500).send('error while parsing JSON');
     }
   } else {
-    res.status(500).send('error while getting the type! select ?type=load or ?type=func')
+    res.status(500).send('error while getting the type! select ?type=load or ?type=func');
   }
 });
-app.get('/api/config/schema',(req,res)=>{
-  const {type} = req.query;
+app.get('/api/config/schema', (req, res)=>{
+  const { type } = req.query;
   if(type)
   {
     try {

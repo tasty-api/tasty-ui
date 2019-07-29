@@ -39,7 +39,7 @@ class Report extends React.Component {
     const { report } = this.state;
 
     if (!report) {
-      return <Spinner />
+      return <Spinner />;
     }
     const columns = [{
       dataField: 'name',
@@ -106,12 +106,12 @@ class Report extends React.Component {
             const percent = row.stats.passes / row.stats.tests * 100;
 
             switch (true) {
-              case percent === 100:
-                return 'table-success';
-              case percent >= 90 && percent < 100:
-                return 'table-warning';
-              default:
-                return 'table-danger';
+            case percent === 100:
+              return 'table-success';
+            case percent >= 90 && percent < 100:
+              return 'table-warning';
+            default:
+              return 'table-danger';
             }
           }}/>
         )}

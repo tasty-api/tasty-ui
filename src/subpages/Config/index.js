@@ -1,7 +1,7 @@
 import React from 'react';
-import {Form, Button, Toast, Alert} from 'react-bootstrap';
+import { Form, Button, Toast, Alert } from 'react-bootstrap';
 import * as api from '../../api';
-import {FaCheck as Success, FaTimes as Failure} from 'react-icons/fa';
+import { FaCheck as Success, FaTimes as Failure } from 'react-icons/fa';
 import Ajv from 'ajv';
 import styles from './styles.modules.scss';
 import cn from 'classnames';
@@ -29,11 +29,11 @@ class Index extends React.Component {
     this.setState({
       configValue: JSON.stringify(currentConfig, null, 2),
       schema
-    })
+    });
   }
 
   onChange = (event) => {
-    this.setState({configValue: event.target.value});
+    this.setState({ configValue: event.target.value });
   };
 
   async componentWillReceiveProps(nextProps, nextContext) {
@@ -43,7 +43,7 @@ class Index extends React.Component {
       type: nextProps.match.params.type,
       configValue: JSON.stringify(newValue, null, 2),
       schema
-    })
+    });
   };
 
   handleSaveButton = async () => {
@@ -51,27 +51,27 @@ class Index extends React.Component {
     //const engine = this.ajv.addSchema(this.state.schema,'schema1');
     try {
       debugger;
-      const valid = this.ajv.addSchema(this.state.schema,'schema1').validate('schema1',JSON.parse(this.state.configValue));
+      const valid = this.ajv.addSchema(this.state.schema, 'schema1').validate('schema1', JSON.parse(this.state.configValue));
       if(valid) {
         const result = await api.setConfiguration(this.state.type, this.state.configValue);
         if (!result.error) {
           this.showToggle(true);
         } else {
-          this.showToggle(false,result.err);
+          this.showToggle(false, result.err);
         }
       }
       else {
         this.showToggle(false, this.ajv.errorsText());
       }
     } catch(error) {
-      this.showToggle(false,`error while operating with JSON structure: ${error}`);
+      this.showToggle(false, `error while operating with JSON structure: ${error}`);
     }
     finally {
       this.ajv.removeSchema('schema1');
     }
   };
 
-  showToggle = (isSuccess,errorText=null) => {
+  showToggle = (isSuccess, errorText=null) => {
     if(!isSuccess) {
       this.setState({
         showA: !this.state.showA,
@@ -81,14 +81,14 @@ class Index extends React.Component {
     } else {
       this.setState({
         showA: !this.state.showA,
-        showABody:"Your configuration has been successfully saved!",
+        showABody:'Your configuration has been successfully saved!',
         showATitle:'SUCCESS!'
       });
     }
   };
 
   handleClose = () => {
-    this.setState({showA: !this.state.showA});
+    this.setState({ showA: !this.state.showA });
   };
 
   render() {
