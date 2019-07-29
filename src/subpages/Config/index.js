@@ -1,13 +1,10 @@
 import React from 'react';
-import { Form, Button, Toast, Alert } from 'react-bootstrap';
+import { Form, Button, Toast } from 'react-bootstrap';
 import * as api from '../../api';
 import { FaCheck as Success, FaTimes as Failure } from 'react-icons/fa';
 import Ajv from 'ajv';
-import styles from './styles.modules.scss';
+import './styles.modules.scss';
 import cn from 'classnames';
-
-
-const customStructure = {};
 
 class Index extends React.Component {
   constructor(props) {

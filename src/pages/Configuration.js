@@ -4,9 +4,6 @@ import { NavLink, Redirect, Route, Switch } from 'react-router-dom';
 import Index from '../subpages/Config';
 
 class ConfigurationPage extends React.Component {
-  constructor(props){
-    super(props);
-  }
   render() {
     return (
       <>
