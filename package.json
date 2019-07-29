@@ -52,6 +52,7 @@
     ]
   },
   "devDependencies": {
-    "husky": "^2.7.0"
+    "husky": "^2.7.0",
+    "eslint":"^5.16.0"
   }
 }
