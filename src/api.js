@@ -65,3 +65,29 @@ export const getLog = async () => {
     return null;
   }
 };
+export const getConfiguration = async (type) => {
+  try {
+    const res = await axios.get(`/api/config?type=${type}`);
+    return res.data;
+  } catch (err) {
+    return null;
+  }
+};
+export const setConfiguration = async (type, data) => {
+  try {
+    const sendData = JSON.parse(data);
+    const res = await axios.post(`/api/config?type=${type}`, sendData);
+    return res.data;
+  } catch (err) {
+    return { error:true, err };
+  }
+};
+export const getSchema = async (type) =>{
+  try{
+    const data = await axios.get(`/api/config/schema?type=${type}`);
+    return data.data;
+  }
+  catch(err){
+    return err;
+  }
+};

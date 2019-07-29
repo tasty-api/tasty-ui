@@ -54,7 +54,7 @@ class Tests extends React.Component {
     this.socket.on('tests:load:log', (log) => {
       localStorage.setItem('load_log', this.state.loadLog + log);
       this.setState({ loadLog: this.state.loadLog + log });
-    })
+    });
   }
 
   componentWillUnmount() {
@@ -120,12 +120,12 @@ class Tests extends React.Component {
 
   getCodeColor = (code) => {
     switch (true) {
-      case code >= 200 && code < 300:
-        return 'success';
-      case code >= 300 && code < 400:
-        return 'primary';
-      default:
-        return 'danger';
+    case code >= 200 && code < 300:
+      return 'success';
+    case code >= 300 && code < 400:
+      return 'primary';
+    default:
+      return 'danger';
     }
   };
 
