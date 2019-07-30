@@ -7,7 +7,7 @@ const proxy = require('http-proxy-middleware');
 const restServer = require('./server');
 
 const restServerPort = 3000; // @todo move to nconf
-const staticServerPort = 8080; // @todo move to nconf
+const staticServerPort = 9090; // @todo move to nconf
 
 const staticServer = express();
 
