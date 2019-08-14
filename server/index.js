@@ -7,6 +7,7 @@ const Tests = require('./Tests');
 const path = require('path');
 const socket = require('socket.io');
 const TastyRunner = require(path.resolve(process.cwd(), 'index.js'));
+const { version } = require('../package.json');
 
 const io = socket(server);
 
@@ -63,6 +64,12 @@ app.get('/api/log', (req, res) => {
   res.json({
     func: fs.existsSync(funcLogFile) ? fs.readFileSync(funcLogFile).toString() : '',
     load: fs.existsSync(loadLogFile) ? fs.readFileSync(loadLogFile).toString() : '',
+  });
+});
+
+app.get('/api/version', (req, res) => {
+  res.json({
+    version,
   });
 });
 
