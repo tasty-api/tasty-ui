@@ -40,7 +40,7 @@ app.get('/api/reports/:id', async (req, res) => {
   res.json(report);
 });
 
-app.post('/api/test', (req) => {
+app.post('/api/test', (req, res) => {
   const filters = req.body.data;
 
   io.emit('tests:start');
@@ -51,6 +51,10 @@ app.post('/api/test', (req) => {
     .then((stats) => {
       io.emit('tests:end', stats);
     });
+
+  res.json({
+    status: 'ok',
+  });
 });
 
 app.get('/api/status', (req, res) => {
