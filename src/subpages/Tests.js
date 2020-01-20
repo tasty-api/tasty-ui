@@ -16,7 +16,7 @@ class Tests extends React.Component {
     loadLog: '',
   };
 
-  socket = socketIOClient('http://localhost:3000');
+  socket = socketIOClient();
 
   async componentDidMount() {
     const filters = {
