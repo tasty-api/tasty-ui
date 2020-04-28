@@ -50,6 +50,9 @@ app.post('/api/test', (req, res) => {
   TastyRunner.run(filters.type)
     .then((stats) => {
       io.emit('tests:end', stats);
+    })
+    .catch((err) => {
+      io.emit('tests:error', err.message)
     });
 
   res.json({
