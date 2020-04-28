@@ -1,5 +1,5 @@
 import React from 'react';
-import { Badge, Button, Col, ListGroup, ProgressBar, Row, Spinner } from 'react-bootstrap';
+import { Badge, Button, Col, ListGroup, ProgressBar, Row, Spinner, Toast } from 'react-bootstrap';
 import _ from 'lodash';
 import * as api from '../api';
 import { FaPlay as Run } from 'react-icons/fa';
@@ -14,6 +14,7 @@ class Tests extends React.Component {
     stats: {},
     funcLog: '',
     loadLog: '',
+    error: null,
   };
 
   socket = socketIOClient();
@@ -42,8 +43,12 @@ class Tests extends React.Component {
     });
 
     this.socket.on('tests:end', (stats) => {
-      this.setState({ loading: false, stats });
+      this.setState({ loading: false, stats, error: null });
       localStorage.setItem(this.type === 'func' ? 'func_stats' : 'load_stats', JSON.stringify(stats));
+    });
+
+    this.socket.on('tests:error', (err) => {
+      this.setState({ loading: false, error: err });
     });
 
     this.socket.on('tests:func:log', (log) => {
@@ -179,7 +184,7 @@ class Tests extends React.Component {
   };
 
   render() {
-    const { tests } = this.state;
+    const { tests, error } = this.state;
 
     if (!tests) return <Spinner />;
 
@@ -226,6 +231,23 @@ class Tests extends React.Component {
             <div dangerouslySetInnerHTML={this.createMarkup()} style={{ whiteSpace: 'pre-wrap' }} />
           </Col>
         </Row>
+        <Toast
+          style={{
+            position: 'fixed',
+            bottom: '12px',
+            right: '14px',
+            zIndex: 1000,
+          }}
+          show={!!error}
+          onClose={() => this.setState({ error: !error })}
+          delay={8000}
+          autohide
+        >
+          <Toast.Header className='bg-danger text-light'>
+            <strong className="mr-auto">Tasty Error</strong>
+          </Toast.Header>
+          <Toast.Body style={{ padding: '20px 15px' }}>{error}</Toast.Body>
+        </Toast>
       </>
     );
   }
