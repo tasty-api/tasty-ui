@@ -8,6 +8,7 @@ const path = require('path');
 const socket = require('socket.io');
 const TastyRunner = require(path.resolve(process.cwd(), 'index.js'));
 const { version } = require('../package.json');
+const config = require('../config');
 
 const io = socket(server);
 
@@ -50,9 +51,26 @@ app.post('/api/test', (req, res) => {
   TastyRunner.run(filters.type)
     .then((stats) => {
       io.emit('tests:end', stats);
+
+      config.get('notification').map(notification => {
+        if (notification.type) {
+          io.emit('tests:test', notification.type);
+          const { isNotificationEnabled, notify, getMessage } = require(`./notification/${notification.type}`);
+
+          if (isNotificationEnabled(notification)) {
+            const notificationMessage = getMessage({ ...stats, users: notification.users || [] });
+
+            notify(notificationMessage, notification)
+              .catch((err) => {
+                io.emit('tests:error', err.message);
+              });
+          }
+        } else throw new Error('Notification `type` field is required');
+        return;
+      })
     })
     .catch((err) => {
-      io.emit('tests:error', err)
+      io.emit('tests:error', err.message)
     });
 
   res.json({
