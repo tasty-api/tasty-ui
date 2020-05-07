@@ -11,7 +11,7 @@ ${testRunLink ? `<a href='${testRunLink}'>Test run</a>` : ''}
     <i>Successful tests</i>: <b>${passes}</b>
     <i>Failing tests</i>: <b>${failures}</b>
     <i>Pending tests</i>: <b>${pending}</b>
-    <i>Total duration</i>: <b>${duration}ms</b>
+    <i>Total duration</i>: <b>${duration}</b>
     <i>Finished at</i>: <b>${moment(end).format('DD/MM/YY hh:mm:ss')}</b>
 ${failures && users.length ? users.join(', ') : ''}
 `;
