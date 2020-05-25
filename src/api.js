@@ -75,3 +75,13 @@ export const getStats = async () => {
     return null;
   }
 };
+
+export const getProjectName = async () => {
+  try {
+    const res = await axios.get('/api/name');
+
+    return res.data;
+  } catch (err) {
+    return null;
+  }
+};
