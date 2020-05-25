@@ -65,3 +65,13 @@ export const getLog = async () => {
     return null;
   }
 };
+
+export const getStats = async () => {
+  try {
+    const res = await axios.get('/api/stats');
+
+    return res.data
+  } catch (err) {
+    return null;
+  }
+};

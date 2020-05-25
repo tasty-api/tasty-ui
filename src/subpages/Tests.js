@@ -26,9 +26,12 @@ class Tests extends React.Component {
     const tests = await api.fetchTests(filters);
     const status = await api.getStatus();
     const logs = await api.getLog();
+    const stats = await api.getStats();
 
     localStorage.setItem('func_log', logs.func);
     localStorage.setItem('load_log', logs.load);
+    localStorage.setItem('func_stats', stats.func);
+    localStorage.setItem('load_stats', stats.load);
 
     this.setState({
       tests,
