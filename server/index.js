@@ -113,4 +113,14 @@ app.get('/api/name', (req, res) => {
   });
 });
 
+app.get('/api/stats', (req, res) => {
+  const funcStatsFile = path.resolve(process.cwd(), 'logs', 'func_stats.json');
+  const loadStatsFile = path.resolve(process.cwd(), 'logs', 'load_stats.json');
+
+  res.json({
+    func: fs.existsSync(funcStatsFile) ? fs.readFileSync(funcStatsFile).toString() : '{}',
+    load: fs.existsSync(loadStatsFile) ? fs.readFileSync(loadStatsFile).toString() : '{}',
+  })
+});
+
 module.exports = server;
