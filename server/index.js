@@ -44,7 +44,8 @@ app.get('/api/reports/:id', async (req, res) => {
 });
 
 app.post('/api/test', (req, res) => {
-  const filters = req.body.data;
+  const filters = req.body.data.filters;
+  const isParallel = req.body.data.isParallel;
   const tests = filters.tests.length;
   let done = 0;
 
@@ -52,7 +53,7 @@ app.post('/api/test', (req, res) => {
 
   TastyRunner.setFilters(filters);
 
-  TastyRunner.run(filters.type, false, [], {
+  TastyRunner.run(filters.type, isParallel, [], {
     onTestEnd: () => {
       done ++;
       io.emit('tests:test:finished', Math.round((done / tests) * 100));

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Badge, Button, Col, ListGroup,  Row, Spinner, Toast, ProgressBar } from 'react-bootstrap';
+import { Badge, Button, Col, ListGroup,  Row, Spinner, Toast, ProgressBar, Form } from 'react-bootstrap';
 import _ from 'lodash';
 import * as api from '../api';
 import { FaPlay as Run } from 'react-icons/fa';
@@ -16,6 +16,7 @@ class Tests extends React.Component {
     loadLog: '',
     errors: [],
     percentage: 0,
+    isParallelMode: false,
   };
 
   socket = socketIOClient();
@@ -151,7 +152,7 @@ class Tests extends React.Component {
       [`${this.type}Log`]: '',
     });
 
-    await api.runTests(filters);
+    await api.runTests(filters, this.state.isParallelMode);
   };
 
   get type() {
@@ -234,7 +235,7 @@ class Tests extends React.Component {
   };
 
   render() {
-    const { tests, errors, percentage } = this.state;
+    const { tests, errors, percentage, isParallelMode } = this.state;
 
     if (!tests) return <Spinner />;
 
@@ -256,10 +257,21 @@ class Tests extends React.Component {
             this.renderStats()
           )}
         </Row>
-        <Row className="my-3">
-          <Button className="ml-3 my-auto" variant="outline-primary" onClick={this.handleToggleAll}>
-            {this.state.selected.length === this.state.tests.length ? 'Unselect All' : 'Select All'}
-          </Button>
+        <Row className="my-3 align-items-center">
+          <Col>
+            <Button className="my-auto" variant="outline-primary" onClick={this.handleToggleAll}>
+              {this.state.selected.length === this.state.tests.length ? 'Unselect All' : 'Select All'}
+            </Button>
+            <Form.Group className='mb-0' controlId="formBasicCheckbox">
+              <Form.Check
+                className='mt-2'
+                type="checkbox"
+                label="Run in Parallel Mode"
+                value={isParallelMode}
+                onClick={() => this.setState({ isParallelMode: !isParallelMode })}
+              />
+            </Form.Group>
+          </Col>
         </Row>
         <Row>
           <Col className="md-3" md={4}>
