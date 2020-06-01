@@ -1,5 +1,6 @@
 import React from 'react';
 import { Badge, Button, Col, ListGroup,  Row, Spinner, Toast, ProgressBar, Form } from 'react-bootstrap';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import _ from 'lodash';
 import * as api from '../api';
 import { FaPlay as Run } from 'react-icons/fa';
@@ -130,7 +131,9 @@ class Tests extends React.Component {
     if (_.includes(selected, test)) {
       this.setState({ selected: _.pull(selected, test) });
     } else {
-      this.setState({ selected: [ ...this.state.selected, test ] });
+      const newValue = this._mapSelectedValues(this.state.tests, [ ...this.state.selected, test ]);
+
+      this.setState({ selected: newValue });
     }
   };
 
@@ -234,6 +237,21 @@ class Tests extends React.Component {
     })
   };
 
+  handleDragEnd = (res) => {
+    if (!res.destination) return;
+
+    const newValue = _.cloneDeep(this.state.tests);
+    const [removed] = newValue.splice(res.source.index, 1);
+    newValue.splice(res.destination.index, 0, removed);
+
+    let newSelected = this._mapSelectedValues(newValue, this.state.selected);
+
+    this.setState({
+      tests: newValue,
+      selected: newSelected,
+    })
+  };
+
   render() {
     const { tests, errors, percentage, isParallelMode } = this.state;
 
@@ -275,19 +293,44 @@ class Tests extends React.Component {
         </Row>
         <Row>
           <Col className="md-3" md={4}>
-            <ListGroup>
-              {tests.map(test => (
-                <ListGroup.Item
-                  className="text-truncate"
-                  key={test.id}
-                  onClick={() => this.handleToggle(test)}
-                  active={_.includes(this.state.selected, test)}
-                >
-                  <div>{test.name}</div>
-                  <small>{test.path}</small>
-                </ListGroup.Item>
-              ))}
-            </ListGroup>
+            <DragDropContext onDragEnd={this.handleDragEnd}>
+              <Droppable droppableId='droppable'>
+                {provided => (
+                  <div
+                    {...provided.droppableProps}
+                     ref={provided.innerRef}
+                  >
+                    <ListGroup>
+                      {tests.map((test, index) => (
+                          <Draggable
+                            key={test.id}
+                            draggableId={test.id}
+                            index={index}
+                          >
+                            {provided => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                              >
+                                <ListGroup.Item
+                                  className="text-truncate"
+                                  onClick={() => this.handleToggle(test)}
+                                  active={_.find(this.state.selected, test)}
+                                >
+                                  <div>{test.name}</div>
+                                  <small>{test.path}</small>
+                                </ListGroup.Item>
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
+                      {provided.placeholder}
+                    </ListGroup>
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
           </Col>
           <Col md={8}>
             <div dangerouslySetInnerHTML={this.createMarkup()} style={{ whiteSpace: 'pre-wrap' }} />
@@ -321,6 +364,8 @@ class Tests extends React.Component {
       </>
     );
   }
+
+  _mapSelectedValues = (testArray, selectedArray) => _.compact(testArray.map(test => _.find(selectedArray, test)));
 }
 
 export default Tests;
