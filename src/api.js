@@ -34,10 +34,13 @@ export const fetchTests = async (filters) => {
   }
 };
 
-export const runTests = async (filters) => {
+export const runTests = async (filters, isParallel) => {
   try {
     const res = await axios.post('/api/test', {
-      data: filters,
+      data: {
+        filters,
+        isParallel
+      },
     });
 
     return res.data;
