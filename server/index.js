@@ -53,7 +53,7 @@ app.post('/api/test', (req, res) => {
 
   TastyRunner.setFilters(filters);
 
-  TastyRunner.run(filters.type, isParallel, [], {
+  TastyRunner.run(filters.type, isParallel, filters.tests, {
     onTestEnd: () => {
       done ++;
       io.emit('tests:test:finished', Math.round((done / tests) * 100));
