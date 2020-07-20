@@ -52,7 +52,11 @@ app.post('/api/test', (req, res) => {
     .then((stats) => {
       io.emit('tests:end', stats);
 
-      config.get('notification').map(notification => {
+      const notifications = config.get('notification');
+
+      if (!notifications || !Array.isArray(notifications)) return;
+
+      notifications.forEach(notification => {
         if (notification.type) {
           io.emit('tests:test', notification.type);
           const { isNotificationEnabled, notify, getMessage } = require(`./notification/${notification.type}`);
@@ -66,8 +70,7 @@ app.post('/api/test', (req, res) => {
               });
           }
         } else throw new Error('Notification `type` field is required');
-        return;
-      })
+      });
     })
     .catch((err) => {
       io.emit('tests:error', err.message)
