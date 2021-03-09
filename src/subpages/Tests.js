@@ -1,5 +1,5 @@
 import React from 'react';
-import { Badge, Button, Col, ListGroup, ProgressBar, Row, Spinner, Toast } from 'react-bootstrap';
+import { Badge, Button, Col, ListGroup,  Row, Spinner, Toast, ProgressBar, Form } from 'react-bootstrap';
 import _ from 'lodash';
 import * as api from '../api';
 import { FaPlay as Run } from 'react-icons/fa';
@@ -15,6 +15,8 @@ class Tests extends React.Component {
     funcLog: '',
     loadLog: '',
     errors: [],
+    percentage: 0,
+    isParallelMode: false,
   };
 
   socket = socketIOClient();
@@ -26,9 +28,12 @@ class Tests extends React.Component {
     const tests = await api.fetchTests(filters);
     const status = await api.getStatus();
     const logs = await api.getLog();
+    const stats = await api.getStats();
 
     localStorage.setItem('func_log', logs.func);
     localStorage.setItem('load_log', logs.load);
+    localStorage.setItem('func_stats', stats.func);
+    localStorage.setItem('load_stats', stats.load);
 
     this.setState({
       tests,
@@ -39,29 +44,53 @@ class Tests extends React.Component {
     });
 
     this.socket.on('tests:start', () => {
-      this.setState({ loading: true });
+      localStorage.setItem('func_log', '');
+      localStorage.setItem('load_log', '');
+
+      this.setState({
+        loading: true,
+      });
     });
 
     this.socket.on('tests:end', (stats) => {
-      this.setState({ loading: false, stats });
+      this.setState({
+        loading: false,
+        stats,
+        percentage: 0
+      });
       localStorage.setItem(this.type === 'func' ? 'func_stats' : 'load_stats', JSON.stringify(stats));
     });
 
     this.socket.on('tests:error', (err) => {
       this.setState((prevState) => ({
         loading: false,
+        percentage: 0,
         errors: [...prevState.errors, err]
       }));
     });
 
     this.socket.on('tests:func:log', (log) => {
-      localStorage.setItem('func_log', this.state.funcLog + log);
-      this.setState({ funcLog: this.state.funcLog + log });
+      localStorage.setItem('func_log', localStorage.getItem('func_log') + log );
     });
 
+    this.socket.on('tests:func:log', _.throttle(this.setFuncLog, 300, {
+      trailing: true,
+      leading: false
+    }));
+
     this.socket.on('tests:load:log', (log) => {
-      localStorage.setItem('load_log', this.state.loadLog + log);
-      this.setState({ loadLog: this.state.loadLog + log });
+      localStorage.setItem('load_log', localStorage.getItem('load_log') + log);
+    });
+
+    this.socket.on('tests:load:log', _.throttle(this.setLoadLog, 300, {
+      trailing: true,
+      leading: false
+    }));
+
+    this.socket.on('tests:test:finished', (percentage) => {
+      this.setState({
+        percentage
+      })
     })
   }
 
@@ -87,6 +116,14 @@ class Tests extends React.Component {
     }
   }
 
+  setFuncLog = () => {
+    this.setState({ funcLog: localStorage.getItem('func_log') })
+  };
+
+  setLoadLog = () => {
+    this.setState({ loadLog: localStorage.getItem('load_log')  });
+  };
+
   handleToggle = (test) => {
     const { selected } = this.state;
 
@@ -107,7 +144,7 @@ class Tests extends React.Component {
     const selectedTests = _.get(this.state, 'selected', this.state.tests);
     const filters = {
       type: this.type,
-      tests: selectedTests.map(test => test.id),
+      tests: selectedTests.length ? selectedTests.map(test => test.id) : this.state.tests.map(test => test.id),
     };
 
     this.setState({
@@ -115,7 +152,7 @@ class Tests extends React.Component {
       [`${this.type}Log`]: '',
     });
 
-    await api.runTests(filters);
+    await api.runTests(filters, this.state.isParallelMode);
   };
 
   get type() {
@@ -198,7 +235,7 @@ class Tests extends React.Component {
   };
 
   render() {
-    const { tests, errors } = this.state;
+    const { tests, errors, percentage, isParallelMode } = this.state;
 
     if (!tests) return <Spinner />;
 
@@ -214,16 +251,27 @@ class Tests extends React.Component {
           </div>
           {this.state.loading ? (
             <Col>
-              <ProgressBar now={0} className="my-auto" />
+              <ProgressBar now={percentage} label={`${percentage}%`} animated striped className="my-auto" />
             </Col>
           ) : (
             this.renderStats()
           )}
         </Row>
-        <Row className="my-3">
-          <Button className="ml-3 my-auto" variant="outline-primary" onClick={this.handleToggleAll}>
-            {this.state.selected.length === this.state.tests.length ? 'Unselect All' : 'Select All'}
-          </Button>
+        <Row className="my-3 align-items-center">
+          <Col>
+            <Button className="my-auto" variant="outline-primary" onClick={this.handleToggleAll}>
+              {this.state.selected.length === this.state.tests.length ? 'Unselect All' : 'Select All'}
+            </Button>
+            <Form.Group className='mb-0' controlId="formBasicCheckbox">
+              <Form.Check
+                className='mt-2'
+                type="checkbox"
+                label="Run in Parallel Mode"
+                value={isParallelMode}
+                onClick={() => this.setState({ isParallelMode: !isParallelMode })}
+              />
+            </Form.Group>
+          </Col>
         </Row>
         <Row>
           <Col className="md-3" md={4}>

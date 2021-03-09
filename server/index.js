@@ -10,6 +10,8 @@ const TastyRunner = require(path.resolve(process.cwd(), 'index.js'));
 const { version } = require('../package.json');
 const config = require('../config');
 
+const PROJECT_NAME = config.get('name');
+
 const io = socket(server);
 
 TastyRunner.logStream.on('data', (data) => {
@@ -42,17 +44,25 @@ app.get('/api/reports/:id', async (req, res) => {
 });
 
 app.post('/api/test', (req, res) => {
-  const filters = req.body.data;
+  const filters = req.body.data.filters;
+  const isParallel = req.body.data.isParallel;
+  const tests = filters.tests.length;
+  let done = 0;
 
   io.emit('tests:start');
 
   TastyRunner.setFilters(filters);
 
-  TastyRunner.run(filters.type)
+  TastyRunner.run(filters.type, isParallel, [], {
+    onTestEnd: () => {
+      done ++;
+      io.emit('tests:test:finished', Math.round((done / tests) * 100));
+    },
+  })
     .then((stats) => {
       io.emit('tests:end', stats);
 
-      config.get('notification').map(notification => {
+      config.get('notification') && config.get('notification').map(notification => {
         if (notification.type) {
           io.emit('tests:test', notification.type);
           const { isNotificationEnabled, notify, getMessage } = require(`./notification/${notification.type}`);
@@ -96,6 +106,22 @@ app.get('/api/version', (req, res) => {
   res.json({
     version,
   });
+});
+
+app.get('/api/name', (req, res) => {
+  res.json({
+    name: PROJECT_NAME
+  });
+});
+
+app.get('/api/stats', (req, res) => {
+  const funcStatsFile = path.resolve(process.cwd(), 'logs', 'func_stats.json');
+  const loadStatsFile = path.resolve(process.cwd(), 'logs', 'load_stats.json');
+
+  res.json({
+    func: fs.existsSync(funcStatsFile) ? fs.readFileSync(funcStatsFile).toString() : '{}',
+    load: fs.existsSync(loadStatsFile) ? fs.readFileSync(loadStatsFile).toString() : '{}',
+  })
 });
 
 module.exports = server;

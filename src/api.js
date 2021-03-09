@@ -34,10 +34,13 @@ export const fetchTests = async (filters) => {
   }
 };
 
-export const runTests = async (filters) => {
+export const runTests = async (filters, isParallel) => {
   try {
     const res = await axios.post('/api/test', {
-      data: filters,
+      data: {
+        filters,
+        isParallel
+      },
     });
 
     return res.data;
@@ -61,6 +64,26 @@ export const getLog = async () => {
     const res = await axios.get('/api/log');
 
     return res.data;
+  } catch (err) {
+    return null;
+  }
+};
+
+export const getProjectName = async () => {
+  try {
+    const res = await axios.get('/api/name');
+
+    return res.data;
+  } catch (err) {
+    return null;
+  }
+};
+
+export const getStats = async () => {
+  try {
+    const res = await axios.get('/api/stats');
+
+    return res.data
   } catch (err) {
     return null;
   }
